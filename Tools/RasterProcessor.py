@@ -179,21 +179,10 @@ class RasterProcessor:
                 print(f"  - 无有效像元")
 
         valid_mask = (output != nodata)
-
-        # 对有效数据区域进行中值滤波
-        # 注意：仅对有效数据区域进行处理，避免NoData区域参与计算
         filtered_output = output.copy()
-
-        # 应用中值滤波
-        # size参数指定滤波窗口大小，例如3表示3x3的窗口
-        print("✅ 预测完成，开始进行中值滤波以平滑空间噪声...")
         filtered_data = ndimage.median_filter(output, size=median_filter_size)
-
         # 确保只有原本有效的区域被更新，保持NoData区域不变
         filtered_output[valid_mask] = filtered_data[valid_mask]
-
-        print(f"✅ 中值滤波完成 (窗口大小: {median_filter_size}x{median_filter_size})")
-
         # 使用滤波后的数据更新output
         output = filtered_output
 
